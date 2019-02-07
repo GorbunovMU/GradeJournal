@@ -3,89 +3,68 @@ package journal.controller;
 import journal.model.Roles;
 import journal.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping(path = "/users")
+@RestController
 public class UserController {
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
 
-    @GetMapping(path = "/all")
-    public @ResponseBody Iterable<Users> getAllUsers() {
-
-        return repository.findAll();
+    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    public Iterable<Users> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    @GetMapping(path = "/user/{id}")
-    public @ResponseBody Users getUserById(@PathVariable Integer id) {
-        if (repository.findById(id).isPresent()) {
-            return repository.findById(id).get();
+    @RequestMapping(path = "/users/{id}", method = RequestMethod.GET)
+    public Users getUserById(@PathVariable Integer id) {
+        if (userRepository.findById(id).isPresent()) {
+            return userRepository.findById(id).get();
         } else {
             throw new ObjectNotFoundException(id);
         }
     }
 
-    @PostMapping(path = "/new")
-    public @ResponseBody String addUser(@RequestParam String firstName,
-                                        @RequestParam String lastName,
-                                        @RequestParam String patronymic,
-                                        @RequestParam Integer roleID) {
-
-
-        Roles role;
-        if (roleRepository.findById(roleID).isPresent()) {
-            role = roleRepository.findById(roleID).get();
-            Users user = new Users();
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setPatronymic(patronymic);
-            user.setRole(role);
-            repository.save(user);
+    @RequestMapping(path = "/users", method = RequestMethod.POST)
+    public String addUser(@RequestBody Users newUser) {
+        if (roleRepository.findById(newUser.getRole().getId()).isPresent()) {
+            userRepository.save(newUser);
             return "Saved";
         } else {
             return "Not found role";
         }
     }
 
-    @PutMapping(path = "/rename")
-    public @ResponseBody String renameUser(@RequestParam Integer id,
-                                           @RequestParam String newFirstName,
-                                           @RequestParam String newLastName,
-                                           @RequestParam String newPatronymic,
-                                           @RequestParam Integer newRoleID) {
-
-        Roles newRole;
+    @RequestMapping(path = "/users/{id}", method = RequestMethod.PUT)
+    public @ResponseBody String renameUser(@PathVariable Integer id, @RequestBody Users newUser) {
         Users user;
-        if (repository.findById(id).isPresent()) {
-            if (roleRepository.findById(newRoleID).isPresent()) {
-                newRole = roleRepository.findById(newRoleID).get();
-                user = repository.findById(id).get();
-                user.setFirstName(newFirstName);
-                user.setLastName(newLastName);
-                user.setPatronymic(newPatronymic);
-                user.setRole(newRole);
-                repository.save(user);
+        if (userRepository.findById(id).isPresent()) {
+            if (roleRepository.findById(newUser.getRole().getId()).isPresent()) {
+                user = userRepository.findById(id).get();
+                user.setFirstName(newUser.getFirstName());
+                user.setLastName(newUser.getLastName());
+                user.setPatronymic(newUser.getPatronymic());
+                user.setRole(newUser.getRole());
+                userRepository.save(user);
                 return "Renamed";
             } else {
-                return "Not found new role";
+                return "Not found role";
             }
         } else {
             return "Not found user";
         }
     }
 
-    @DeleteMapping(path = "/delete")
-    public @ResponseBody String deleteUser(@RequestParam Integer id) {
-        if (repository.findById(id).isPresent()) {
-            repository.deleteById(id);
+    @RequestMapping(path = "/users/{id}", method = RequestMethod.DELETE)
+    public @ResponseBody String deleteUser(@PathVariable Integer id) {
+        if (userRepository.findById(id).isPresent()) {
+            userRepository.deleteById(id);
             return "Deleted";
         } else {
             return "Not found";
         }
     }
+
 }

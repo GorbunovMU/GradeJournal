@@ -2,23 +2,21 @@ package journal.controller;
 
 import journal.model.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping(path = "/roles")
+@RestController
 public class RoleController {
 
     @Autowired
     private RoleRepository repository;
 
-    @GetMapping(path = "/all")
-    public @ResponseBody Iterable<Roles> getAllRoles() {
+    @RequestMapping(path = "/roles", method = RequestMethod.GET)
+    public Iterable<Roles> getAllRoles() {
         return repository.findAll();
     }
 
-    @GetMapping(path = "/role/{id}")
-    public @ResponseBody Roles getRoleById(@PathVariable Integer id) {
+    @RequestMapping(path = "/roles/{id}", method = RequestMethod.GET)
+    public Roles getRoleById(@PathVariable Integer id) {
         if (repository.findById(id).isPresent()) {
             return repository.findById(id).get();
         } else {
@@ -26,15 +24,15 @@ public class RoleController {
         }
     }
 
-    @PostMapping(path = "/new")
-    public @ResponseBody String addRole(@RequestParam String name) {
+    @RequestMapping(path = "/roles", method = RequestMethod.POST)
+    public String addRole(@RequestParam String name) {
         Roles role = new Roles(name);
         repository.save(role);
         return "Saved";
     }
 
-    @PutMapping(path = "/rename")
-    public @ResponseBody String renameRole(@RequestParam Integer id, @RequestParam String newName) {
+    @RequestMapping(path = "/roles/{id}", method = RequestMethod.PUT)
+    public @ResponseBody String renameRole(@PathVariable Integer id, @RequestParam String newName) {
         Roles role;
         if (repository.findById(id).isPresent()) {
             role = repository.findById(id).get();
@@ -46,8 +44,8 @@ public class RoleController {
         }
     }
 
-    @DeleteMapping(path = "/delete")
-    public @ResponseBody String deleteRole(@RequestParam Integer id) {
+    @RequestMapping(path = "/roles/{id}", method = RequestMethod.DELETE)
+    public @ResponseBody String deleteRole(@PathVariable Integer id) {
         if (repository.findById(id).isPresent()) {
             repository.deleteById(id);
             return "Deleted";
