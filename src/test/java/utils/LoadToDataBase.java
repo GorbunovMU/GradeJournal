@@ -3,11 +3,10 @@ package utils;
 import journal.model.Role;
 import journal.model.Subject;
 import journal.model.User;
-import journal.utils.RoleRepository;
-import journal.utils.SubjectRepository;
-import journal.utils.UserRepository;
+import journal.DAO.RoleRepository;
+import journal.DAO.SubjectRepository;
+import journal.DAO.UserRepository;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Set;
 

@@ -2,7 +2,7 @@ package journal.controller;
 
 import journal.model.Role;
 import journal.utils.ObjectNotFoundException;
-import journal.utils.RoleRepository;
+import journal.DAO.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;

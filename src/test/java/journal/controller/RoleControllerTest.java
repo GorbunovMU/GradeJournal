@@ -2,8 +2,7 @@ package journal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import journal.model.Role;
-import journal.model.Subject;
-import journal.utils.RoleRepository;
+import journal.DAO.RoleRepository;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

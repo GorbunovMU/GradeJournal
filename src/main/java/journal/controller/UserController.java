@@ -1,18 +1,13 @@
 package journal.controller;
 
-import com.sun.xml.internal.bind.v2.TODO;
-import journal.model.Role;
 import journal.model.User;
 import journal.service.UserService;
 import journal.utils.ObjectNotFoundException;
-import journal.utils.RoleRepository;
-import journal.utils.UserRepository;
+import journal.DAO.RoleRepository;
+import journal.DAO.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 @RestController
 public class UserController {

@@ -1,7 +1,7 @@
 package journal.controller;
 
 import journal.utils.ObjectNotFoundException;
-import journal.utils.SubjectRepository;
+import journal.DAO.SubjectRepository;
 import journal.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;

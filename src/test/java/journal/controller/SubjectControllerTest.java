@@ -2,7 +2,7 @@ package journal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import journal.model.Subject;
-import journal.utils.SubjectRepository;
+import journal.DAO.SubjectRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

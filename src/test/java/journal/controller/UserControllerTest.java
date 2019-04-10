@@ -1,11 +1,10 @@
 package journal.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import journal.model.Role;
 import journal.model.User;
-import journal.utils.RoleRepository;
-import journal.utils.UserRepository;
+import journal.DAO.RoleRepository;
+import journal.DAO.UserRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
