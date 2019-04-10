@@ -1,4 +1,4 @@
-package journal.utils;
+package journal.DAO;
 
 import journal.model.UserSubjectGrades;
 import org.springframework.data.jpa.repository.JpaRepository;

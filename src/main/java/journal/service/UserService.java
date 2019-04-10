@@ -1,7 +1,7 @@
 package journal.service;
 
 import journal.model.Role;
-import journal.utils.RoleRepository;
+import journal.DAO.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

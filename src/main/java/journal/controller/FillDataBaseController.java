@@ -4,10 +4,10 @@ import journal.model.Role;
 import journal.model.Subject;
 import journal.model.User;
 import journal.model.UserSubjectGrades;
-import journal.utils.RoleRepository;
-import journal.utils.SubjectRepository;
-import journal.utils.UserRepository;
-import journal.utils.UserSubjectGradesRepository;
+import journal.DAO.RoleRepository;
+import journal.DAO.SubjectRepository;
+import journal.DAO.UserRepository;
+import journal.DAO.UserSubjectGradesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,17 +18,21 @@ import java.util.Date;
 
 @RestController
 public class FillDataBaseController {
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
+
+    private final UserRepository userRepository;
+
+    private final SubjectRepository subjectRepository;
+
+    private final UserSubjectGradesRepository userSubjectGradesRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private SubjectRepository subjectRepository;
-
-    @Autowired
-    private UserSubjectGradesRepository userSubjectGradesRepository;
+    public FillDataBaseController(RoleRepository roleRepository, UserRepository userRepository, SubjectRepository subjectRepository, UserSubjectGradesRepository userSubjectGradesRepository) {
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.subjectRepository = subjectRepository;
+        this.userSubjectGradesRepository = userSubjectGradesRepository;
+    }
 
     @RequestMapping(path = "/fill", method = RequestMethod.GET)
     public String fillAllTablesInDataBase() {

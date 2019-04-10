@@ -1,4 +1,4 @@
-package journal.utils;
+package journal.DAO;
 
 import journal.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
