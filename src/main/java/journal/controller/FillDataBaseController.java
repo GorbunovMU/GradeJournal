@@ -18,17 +18,21 @@ import java.util.Date;
 
 @RestController
 public class FillDataBaseController {
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
+
+    private final UserRepository userRepository;
+
+    private final SubjectRepository subjectRepository;
+
+    private final UserSubjectGradesRepository userSubjectGradesRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private SubjectRepository subjectRepository;
-
-    @Autowired
-    private UserSubjectGradesRepository userSubjectGradesRepository;
+    public FillDataBaseController(RoleRepository roleRepository, UserRepository userRepository, SubjectRepository subjectRepository, UserSubjectGradesRepository userSubjectGradesRepository) {
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.subjectRepository = subjectRepository;
+        this.userSubjectGradesRepository = userSubjectGradesRepository;
+    }
 
     @RequestMapping(path = "/fill", method = RequestMethod.GET)
     public String fillAllTablesInDataBase() {
