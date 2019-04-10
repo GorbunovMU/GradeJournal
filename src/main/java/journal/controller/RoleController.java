@@ -1,56 +1,65 @@
 package journal.controller;
 
-import journal.model.Roles;
+import journal.model.Role;
+import journal.utils.ObjectNotFoundException;
+import journal.utils.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RoleController {
 
-    @Autowired
-    private RoleRepository repository;
+    private final RoleRepository roleRepository;
 
-    @RequestMapping(path = "/roles", method = RequestMethod.GET)
-    public Iterable<Roles> getAllRoles() {
-        return repository.findAll();
+    @Autowired
+    public RoleController(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
     }
 
-    @RequestMapping(path = "/roles/{id}", method = RequestMethod.GET)
-    public Roles getRoleById(@PathVariable Integer id) {
-        if (repository.findById(id).isPresent()) {
-            return repository.findById(id).get();
+    @RequestMapping(path = "/roles", method = RequestMethod.GET)
+    @Transactional(readOnly = true)
+    public Iterable<Role> getAllRoles() {
+        return roleRepository.findAll();
+    }
+
+    @RequestMapping(path = "/role/{id}", method = RequestMethod.GET)
+    @Transactional(readOnly = true)
+    public Role getRoleById(@PathVariable Integer id) {
+        if (roleRepository.findById(id).isPresent()) {
+            return roleRepository.findById(id).get();
         } else {
             throw new ObjectNotFoundException(id);
         }
     }
 
-    @RequestMapping(path = "/roles", method = RequestMethod.POST)
+    @RequestMapping(path = "/role", method = RequestMethod.POST)
     public String addRole(@RequestParam String name) {
-        Roles role = new Roles(name);
-        repository.save(role);
+        Role role = new Role(name);
+        roleRepository.save(role);
         return "Saved";
     }
 
-    @RequestMapping(path = "/roles/{id}", method = RequestMethod.PUT)
-    public @ResponseBody String renameRole(@PathVariable Integer id, @RequestParam String newName) {
-        Roles role;
-        if (repository.findById(id).isPresent()) {
-            role = repository.findById(id).get();
+    @RequestMapping(path = "/role/{id}", method = RequestMethod.PUT)
+    public String renameRole(@PathVariable Integer id, @RequestParam String newName) {
+        Role role;
+        if (roleRepository.findById(id).isPresent()) {
+            role = roleRepository.findById(id).get();
             role.setName(newName);
-            repository.save(role);
+            roleRepository.save(role);
             return "Renamed";
         } else {
-            return "Not found";
+            throw new ObjectNotFoundException(id);
         }
     }
 
-    @RequestMapping(path = "/roles/{id}", method = RequestMethod.DELETE)
-    public @ResponseBody String deleteRole(@PathVariable Integer id) {
-        if (repository.findById(id).isPresent()) {
-            repository.deleteById(id);
+    @RequestMapping(path = "/role/{id}", method = RequestMethod.DELETE)
+    public String deleteRole(@PathVariable Integer id) {
+        if (roleRepository.findById(id).isPresent()) {
+            roleRepository.deleteById(id);
             return "Deleted";
         } else {
-            return "Not found";
+            throw new ObjectNotFoundException(id);
         }
     }
 

@@ -1,25 +1,41 @@
 package journal.controller;
 
-import journal.model.Roles;
-import journal.model.Users;
+import com.sun.xml.internal.bind.v2.TODO;
+import journal.model.Role;
+import journal.model.User;
+import journal.service.UserService;
+import journal.utils.ObjectNotFoundException;
+import journal.utils.RoleRepository;
+import journal.utils.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 public class UserController {
-    @Autowired
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
+
+    private final UserService userService;
 
     @Autowired
-    private RoleRepository roleRepository;
+    public UserController(UserRepository userRepository, RoleRepository roleRepository, UserService userService) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @RequestMapping(path = "/users", method = RequestMethod.GET)
-    public Iterable<Users> getAllUsers() {
+    @Transactional(readOnly = true)
+    public Iterable<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @RequestMapping(path = "/users/{id}", method = RequestMethod.GET)
-    public Users getUserById(@PathVariable Integer id) {
+    @RequestMapping(path = "/user/{id}", method = RequestMethod.GET)
+    @Transactional(readOnly = true)
+    public User getUserById(@PathVariable Integer id) {
         if (userRepository.findById(id).isPresent()) {
             return userRepository.findById(id).get();
         } else {
@@ -27,43 +43,45 @@ public class UserController {
         }
     }
 
-    @RequestMapping(path = "/users", method = RequestMethod.POST)
-    public String addUser(@RequestBody Users newUser) {
-        if (roleRepository.findById(newUser.getRole().getId()).isPresent()) {
+    @RequestMapping(path = "/user", method = RequestMethod.POST)
+    public String addUser(@RequestBody User newUser) {
+
+        if (userService.areHaveRolesInDataBase(newUser.getRoles())) {
             userRepository.save(newUser);
             return "Saved";
         } else {
-            return "Not found role";
+            throw new ObjectNotFoundException("Not found roles");
         }
     }
 
-    @RequestMapping(path = "/users/{id}", method = RequestMethod.PUT)
-    public @ResponseBody String renameUser(@PathVariable Integer id, @RequestBody Users newUser) {
-        Users user;
-        if (userRepository.findById(id).isPresent()) {
-            if (roleRepository.findById(newUser.getRole().getId()).isPresent()) {
+    @RequestMapping(path = "/user/{id}", method = RequestMethod.PUT)
+    public @ResponseBody String renameUser(@PathVariable Integer id, @RequestBody User newUser) {
+        User user;
+
+        if (userService.areHaveRolesInDataBase(newUser.getRoles())) {
+            if (userRepository.findById(id).isPresent()) {
                 user = userRepository.findById(id).get();
-                user.setFirstName(newUser.getFirstName());
-                user.setLastName(newUser.getLastName());
                 user.setPatronymic(newUser.getPatronymic());
-                user.setRole(newUser.getRole());
+                user.setLastName(newUser.getLastName());
+                user.setFirstName(newUser.getFirstName());
                 userRepository.save(user);
                 return "Renamed";
             } else {
-                return "Not found role";
+                throw new ObjectNotFoundException(id);
             }
         } else {
-            return "Not found user";
+            throw new ObjectNotFoundException("Not found roles");
         }
+
     }
 
-    @RequestMapping(path = "/users/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(path = "/user/{id}", method = RequestMethod.DELETE)
     public @ResponseBody String deleteUser(@PathVariable Integer id) {
         if (userRepository.findById(id).isPresent()) {
             userRepository.deleteById(id);
             return "Deleted";
         } else {
-            return "Not found";
+            throw new ObjectNotFoundException(id);
         }
     }
 

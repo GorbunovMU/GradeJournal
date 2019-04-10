@@ -1,20 +1,19 @@
 package journal.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
-public class Roles {
+@Table(name = "ROLES")
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
+
     @Size(max = 100)
     private String name;
 
-    public Roles() {
+    public Role() {
     }
 
     public Integer getId() {
@@ -25,7 +24,7 @@ public class Roles {
         Id = id;
     }
 
-    public Roles(String name) {
+    public Role(String name) {
         this.name = name;
     }
 
@@ -36,4 +35,5 @@ public class Roles {
     public void setName(String name) {
         this.name = name;
     }
+
 }
