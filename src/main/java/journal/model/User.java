@@ -4,10 +4,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +24,11 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name="USER_ROLE",
+            name="users_roles",
             joinColumns=
-            @JoinColumn(name="USER_ID", referencedColumnName="ID"),
+            @JoinColumn(name="user_id", referencedColumnName="ID"),
             inverseJoinColumns=
-            @JoinColumn(name="ROLE_ID", referencedColumnName="ID")
+            @JoinColumn(name="role_id", referencedColumnName="ID")
     )
     private Set<Role> roles = new HashSet<>();
 
@@ -86,5 +87,23 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return getId().equals(user.getId()) &&
+                getLastName().equals(user.getLastName()) &&
+                getFirstName().equals(user.getFirstName()) &&
+                getPatronymic().equals(user.getPatronymic()) &&
+                Objects.equals(getRoles(), user.getRoles());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getLastName(), getFirstName(),
+                getPatronymic(), getRoles());
     }
 }
